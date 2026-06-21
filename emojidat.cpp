@@ -33,6 +33,7 @@ HRESULT Sqlite3ToHResult(int const nErrorCode)
     case SQLITE_ROW: return S_OK;//SQLITE_E_ROW
     case SQLITE_DONE: return S_FALSE;//SQLITE_E_DONE
     // error
+#ifdef SQLITE_E_ABORT
     case SQLITE_ABORT: return SQLITE_E_ABORT;
     case SQLITE_AUTH: return SQLITE_E_AUTH;
     case SQLITE_BUSY: return SQLITE_E_BUSY;
@@ -62,6 +63,7 @@ HRESULT Sqlite3ToHResult(int const nErrorCode)
     case SQLITE_WARNING: return SQLITE_E_WARNING;
     // unexpected & unknown
     case SQLITE_INTERNAL: return SQLITE_E_INTERNAL;
+#endif  /* SQLITE_E_ABORT */
     default:
         break;
     }
@@ -311,6 +313,9 @@ public:
 class CEmojiDataSqlite3
     : public TUnkImpl< IEmojiData >
 {
+private:
+    typedef CEmojiDataSqlite3 CSelf;
+
 protected:
     sqlite3* m_db;
 
@@ -327,6 +332,26 @@ protected:
     CEmojiDataSqlite3()
         : m_db(NULL)
     {
+    }
+
+    static STDMETHODIMP Create(std::tstring const& sBackendName, IEmojiData** ppDataOut)
+    {
+        HRESULT hr;
+        CSelf* pData = new CSelf;
+
+        hr = pData!=NULL ? S_OK : E_OUTOFMEMORY;
+        if(!FAILED(hr))
+        {
+            hr = pData->Init(sBackendName);
+            if(!FAILED(hr))
+            {
+                CoSafeAddRef(static_cast< IEmojiData* >(pData), ppDataOut);
+            }
+
+            CoSafeRelease(&pData);
+        }
+
+        return hr;
     }
 
 public:
@@ -488,19 +513,8 @@ public:
 STDAPI GetEmojiDatabaseData(IEmojiData** ppDataOut)
 {
     HRESULT hr;
-    CEmojiDataSqlite3* pData = new CEmojiDataSqlite3;
 
-    hr = pData!=NULL ? S_OK : E_OUTOFMEMORY;
-    if(!FAILED(hr))
-    {
-        hr = pData->Init(_T("emojitab.db"));
-        if(!FAILED(hr))
-        {
-            CoSafeAddRef(static_cast< IEmojiData* >(pData), ppDataOut);
-        }
-
-        CoSafeRelease(&pData);
-    }
+    hr = CEmojiDataSqlite3::Create(_T("emojitab.db"), ppDataOut);
 
     return hr;
 }

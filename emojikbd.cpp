@@ -20,20 +20,12 @@
 #include <w32gdi.h>
 #include <w32ui.h>
 #include <w32wnd.hpp>
-#include <wnttools.h>
 
 #include "emojidat.h"
 #include "emojikbd.h"
 
 #define EMOJI_GRID_ITEMS_X 12
 #define EMOJI_GRID_ITEMS_Y 10
-
-#define UNICODE_ZWJ_CODEPOINT L'\x200D'
-
-INT GetRandom(int const nMin, int const nMax)
-{
-    return nMin+(rand()%(nMax-nMin+1));
-}
 
 class CEmojiKeyboard
     : public CWindowUI
@@ -57,6 +49,15 @@ protected:
     TCHAR m_szLastToolTip[128];
 
 protected:
+    static inline INT GetStringLength(LPCTSTR lpszString)
+    {
+        SIZE_T const uLength = _tcslen(lpszString);
+
+        AssertHere(uLength==static_cast< INT >(uLength));
+
+        return static_cast< INT >(uLength);
+    }
+
     INT GetDeviceCapsForWindow(HWND const hWnd, INT const nIndex) const
     {
         HDC hdcWnd = GetDC(hWnd);
@@ -130,6 +131,11 @@ protected:
         return GetDlgItem(hWnd, IDC_EMOJILIST);
     }
 
+    UINT GetEmojiListItem(HWND const hWndCtl, INT const nIndex)
+    {
+        return static_cast< UINT >(ListBox_GetItemData(hWndCtl, nIndex));
+    }
+
     VOID RefreshEmojiDisplaySet()
     {
         UINT uDisplayCount = 0;
@@ -172,7 +178,7 @@ protected:
                             SCRIPT_ANALYSIS Sa = { 0 };
                             int nGlyphs = 0;
 
-                            hr = ScriptShape(hdcMem, &Sc, lpwszCodePoints, _tcslen(lpwszCodePoints), __ARRAYSIZE(awIndices), &Sa, awIndices, awLogClust, Sv, &nGlyphs);
+                            hr = ScriptShape(hdcMem, &Sc, lpwszCodePoints, GetStringLength(lpwszCodePoints), __ARRAYSIZE(awIndices), &Sa, awIndices, awLogClust, Sv, &nGlyphs);
 
                             if(FAILED(hr) || nGlyphs!=1 || awIndices[0]==0)
                             {// does not collapse into single character on this system or font does not support glyph
@@ -242,7 +248,7 @@ protected:
     VOID CopyCurrentEmoji(HWND const hWnd)
     {
         bool bSuccess = false;
-        HWND const hWndList = GetDlgItem(hWnd, IDC_EMOJILIST);
+        HWND const hWndList = GetEmojiList(hWnd);
         UINT const uItem = ListBox_GetCurSel(hWndList);
 
         if(uItem!=LB_ERR)
@@ -321,9 +327,6 @@ protected:
 
         m_hUIFont = BvFont_GetGuiFont();
 
-        LOGFONT lfUI;
-        BvFont_GetGuiLogFont(&lfUI);
-
         INT const nBtnWidth = MapFontXValue(m_hUIFont, DLU_SZ_BUTTON_W);
         INT const nBtnHeight = MapFontYValue(m_hUIFont, DLU_SZ_BUTTON_H);
         INT const nMarginH = MapFontXValue(m_hUIFont, DLU_SP_DIALOGBOX_MARGIN_H);
@@ -381,7 +384,7 @@ protected:
         }
         if(m_hEmojiFont==NULL)
         {
-            MessageBox(hWnd, _T("No Emoji font found. Exiting..."), _T("Fatal Error"), MB_ICONSTOP|MB_OK);
+            MessageBox(NULL, _T("No Emoji font found. Exiting..."), _T("Fatal Error"), MB_ICONSTOP|MB_OK);
             return FALSE;
         }
 
@@ -391,8 +394,8 @@ protected:
         }
 
         SetWindowText(hWnd, _T("Emoji Keyboard"));
-        SetWindowLargeIcon(hWnd, LoadLargeIcon(m_hInstance, MAKEINTRESOURCE(1)));
-        SetWindowSmallIcon(hWnd, LoadSmallIcon(m_hInstance, MAKEINTRESOURCE(1)));
+        SetWindowLargeIcon(hWnd, LoadLargeIcon(m_hInstance, MAKEINTRESOURCE(IDI_MAINICON)));
+        SetWindowSmallIcon(hWnd, LoadSmallIcon(m_hInstance, MAKEINTRESOURCE(IDI_MAINICON)));
         BvFont_SetFont(hWnd, m_hUIFont);
 
         RefreshEmojiList(hWnd);
@@ -402,13 +405,11 @@ protected:
         AdjustWindowRectEx(&rcWnd, GetWindowStyle(hWnd), GetMenu(hWnd)!=NULL, GetWindowExStyle(hWnd));
         CenterWindowInWorkAreaWithRect(hWnd, &rcWnd);
 
-        HWND const hWndList = GetDlgItem(hWnd, IDC_EMOJILIST);
-
         TOOLINFO Ti = { sizeof(Ti) };
 
         Ti.uFlags = TTF_SUBCLASS|TTF_IDISHWND;
         Ti.hwnd = hWnd;
-        Ti.uId = reinterpret_cast< UINT_PTR >(hWndList);
+        Ti.uId = reinterpret_cast< UINT_PTR >(GetEmojiList(hWnd));
         Ti.lpszText = LPSTR_TEXTCALLBACK;
         Tooltip_AddTool(m_hWndTT, &Ti);
         Tooltip_SetMaxTipWidth(m_hWndTT, rcWnd.right-rcWnd.left);
@@ -438,7 +439,7 @@ protected:
             return;
         }
 
-        UINT const uItem = ListBox_GetItemData(lpDrawItem->hwndItem, lpDrawItem->itemID);
+        UINT const uItem = GetEmojiListItem(lpDrawItem->hwndItem, lpDrawItem->itemID);
 
         IEmoji* pEmoji = NULL;
         if(FAILED(GetEmoji(uItem, &pEmoji)))
@@ -471,11 +472,11 @@ protected:
                 }
 
                 SetBkMode(lpDrawItem->hDC, TRANSPARENT);
-                TextOut(lpDrawItem->hDC, lpDrawItem->rcItem.left, lpDrawItem->rcItem.top+2, pEmoji->GetCodePoints(), _tcslen(pEmoji->GetCodePoints()));
+                TextOut(lpDrawItem->hDC, lpDrawItem->rcItem.left, lpDrawItem->rcItem.top+2, pEmoji->GetCodePoints(), GetStringLength(pEmoji->GetCodePoints()));
             }
             RestoreDC(lpDrawItem->hDC, -1);
 
-            if(!!(lpDrawItem->itemState&ODS_FOCUS) && !(lpDrawItem->itemState&ODS_NOFOCUSRECT))
+            if(!!(lpDrawItem->itemState&ODS_FOCUS))
             {
                 RECT rcFocus;
                 CopyRect(&rcFocus, &lpDrawItem->rcItem);
@@ -514,8 +515,9 @@ protected:
 
         HWND const hWndHit = WindowFromPoint(ptMouse);
 
-        if(hWndHit!=GetDlgItem(hWnd, IDC_EMOJILIST))
+        if(hWndHit!=GetEmojiList(hWnd))
         {
+            CSuper::WndProcOnMouseWheel(hWnd, nXPos, nYPos, nZDelta, uKeys);
             return;
         }
 
@@ -550,7 +552,7 @@ protected:
             return 0;
         }
 
-        HWND const hWndList = GetDlgItem(hWnd, IDC_EMOJILIST);
+        HWND const hWndList = GetEmojiList(hWnd);
 
         if(!ScreenToClient(hWndList, &ptCursor))
         {
@@ -566,7 +568,7 @@ protected:
 
         HRESULT hr;
         IEmoji* pEmoji = NULL;
-        UINT const uItem = ListBox_GetItemData(hWndList, LOWORD(lHitTest));
+        UINT const uItem = GetEmojiListItem(hWndList, LOWORD(lHitTest));
 
         hr = GetEmoji(uItem, &pEmoji);
         if(FAILED(hr))

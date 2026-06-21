@@ -20,4 +20,6 @@
 #define IDC_EDIT_FIND (IDC_FIRST+1)
 #define IDC_BTN_COPY (IDC_FIRST+2)
 
+#define IDI_MAINICON (IDI_FIRST+0)
+
 #endif  /* EMOJIKBD_H */
