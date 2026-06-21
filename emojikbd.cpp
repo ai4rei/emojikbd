@@ -12,6 +12,7 @@
 #include <btypes.h>
 #include <bvcstr.h>
 #include <bvfont.h>
+#include <memdbg.h>
 #include <memtaf.h>
 #include <rc_const.h>
 #include <w32co.h>
@@ -614,6 +615,11 @@ public:
         if(m_hSideLoadFont!=NULL)
         {
             W32GdiRemoveFont(&m_hSideLoadFont);
+        }
+
+        if(MemIsLeaked() || MemDbgIsBadStats())
+        {
+            MemDbgPrintStats();
         }
     }
 

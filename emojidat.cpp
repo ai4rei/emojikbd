@@ -7,6 +7,8 @@
 
 #include <btypes.h>
 #include <bvwide.h>
+#define MEMTAF_WITH_CPP_ALLOCATOR
+#include <memtaf.h>
 #include <tstring.h>
 #include <w32co.h>
 
@@ -73,6 +75,7 @@ HRESULT Sqlite3ToHResult(int const nErrorCode)
 
 class CEmoji
     : public TUnkImpl< IEmoji >
+    , protected CMemAllocator
 {
 private:
     typedef CEmoji CSelf;
@@ -171,6 +174,7 @@ public:
 
 class CEnumEmoji
     : public TUnkImpl< IEnumEmoji >
+    , protected CMemAllocator
 {
 private:
     typedef CEnumEmoji CSelf;
@@ -312,6 +316,7 @@ public:
 
 class CEmojiDataSqlite3
     : public TUnkImpl< IEmojiData >
+    , protected CMemAllocator
 {
 private:
     typedef CEmojiDataSqlite3 CSelf;

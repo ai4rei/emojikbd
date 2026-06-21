@@ -32,6 +32,7 @@ $(OBJ)/snippets.lib : \
 	$(OBJ)/bvwide.obj \
 	$(OBJ)/mem.obj \
 	$(OBJ)/mem.win32.heap.obj \
+	$(OBJ)/memdbg.win32.msgbox.obj \
 	$(OBJ)/w32ex.obj \
 	$(OBJ)/w32gdi.obj \
 	$(OBJ)/w32ui.obj
