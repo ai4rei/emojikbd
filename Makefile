@@ -16,22 +16,22 @@ clean :
 	del $(OBJ)\*.lib
 
 emojikbd.exe : \
-    $(OBJ)/emojikbd.obj \
-    $(OBJ)/emojidat.obj \
-    $(OBJ)/emojikbd.res \
-    $(OBJ)/snippets.lib \
-    $(OBJ)/sqlite3.obj
+	$(OBJ)/emojikbd.obj \
+	$(OBJ)/emojidat.obj \
+	$(OBJ)/emojikbd.res \
+	$(OBJ)/snippets.lib \
+	$(OBJ)/sqlite3.obj
 	link $(LFLAGS) -out:$@ $** $(LIBS)
 
 $(OBJ)/snippets.lib : \
-    $(OBJ)/bvcstr.obj \
-    $(OBJ)/bvfont.obj \
-    $(OBJ)/bvwide.obj \
-    $(OBJ)/mem.obj \
-    $(OBJ)/mem.win32.heap.obj \
-    $(OBJ)/w32ex.obj \
-    $(OBJ)/w32gdi.obj \
-    $(OBJ)/w32ui.obj
+	$(OBJ)/bvcstr.obj \
+	$(OBJ)/bvfont.obj \
+	$(OBJ)/bvwide.obj \
+	$(OBJ)/mem.obj \
+	$(OBJ)/mem.win32.heap.obj \
+	$(OBJ)/w32ex.obj \
+	$(OBJ)/w32gdi.obj \
+	$(OBJ)/w32ui.obj
 	lib $(AFLAGS) -out:$@ $**
 
 *.c : Makefile
@@ -39,25 +39,25 @@ $(OBJ)/snippets.lib : \
 *.cpp : Makefile
 
 {}.c{$(OBJ)}$(OBJ_EXT)::
-    $(CC) $(CFLAGS) -c $<
+	$(CC) $(CFLAGS) -c $<
 
 {}.cpp{$(OBJ)}$(OBJ_EXT)::
-    $(CPP) $(CPPFLAGS) -c $<
+	$(CPP) $(CPPFLAGS) -c $<
 
 {3rd/sqlite3}.c{$(OBJ)}$(OBJ_EXT)::
-    $(CC) $(CFLAGS) -c $<
+	$(CC) $(CFLAGS) -c $<
 
 {$(SNIPPETS)}.c{$(OBJ)}$(OBJ_EXT)::
-    $(CC) $(CFLAGS) -c $<
+	$(CC) $(CFLAGS) -c $<
 
 {$(SNIPPETS)/_mem}.c{$(OBJ)}$(OBJ_EXT)::
-    $(CC) $(CFLAGS) -c $<
+	$(CC) $(CFLAGS) -c $<
 
 {$(SNIPPETS)}.cpp{$(OBJ)}$(OBJ_EXT)::
-    $(CPP) $(CPPFLAGS) -c $<
+	$(CPP) $(CPPFLAGS) -c $<
 
 {$(SNIPPETS)/_bvio}.cpp{$(OBJ)}$(OBJ_EXT)::
-    $(CPP) $(CPPFLAGS) -c $<
+	$(CPP) $(CPPFLAGS) -c $<
 
 {}.rc{$(OBJ)}.res:
-    $(RC) $(RCFLAGS) -r -fo$@ $<
+	$(RC) $(RCFLAGS) -r -fo$@ $<
