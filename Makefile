@@ -9,11 +9,14 @@ RCFLAGS = -nologo -I$(SNIPPETS) $(RCFLAGS)
 LFLAGS = -nologo -opt:ref -subsystem:windows,5.1 $(LFLAGS)
 LIBS = user32.lib usp10.lib gdi32.lib ole32.lib comctl32.lib $(LIBS)
 
-all : emojikbd.exe
+all : $(OBJ) emojikbd.exe
 
 clean :
 	del $(OBJ)\*.obj
 	del $(OBJ)\*.lib
+
+$(OBJ) :
+	if not exist $(OBJ)\NUL mkdir $(OBJ)
 
 emojikbd.exe : \
 	$(OBJ)/emojikbd.obj \
