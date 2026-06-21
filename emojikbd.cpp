@@ -183,6 +183,7 @@ protected:
 
                             if(FAILED(hr) || nGlyphs!=1 || awIndices[0]==0)
                             {// does not collapse into single character on this system or font does not support glyph
+                                CoSafeRelease(&pEmoji);
                                 continue;
                             }
 
@@ -204,7 +205,7 @@ protected:
                 CoSafeRelease(&pEnumEmoji);
             }
 
-            MemTFree(&m_auDisplaySet);
+            MemTOptionalFree(&m_auDisplaySet);
             m_auDisplaySet = auDisplaySet;
             m_uDisplayCount = uDisplayCount;
         }
@@ -600,6 +601,8 @@ protected:
 public:
     ~CEmojiKeyboard()
     {
+        MemTOptionalFree(&m_auDisplaySet);
+
         CoSafeRelease(&m_pData);
 
         if(m_hEmojiFont!=NULL)
