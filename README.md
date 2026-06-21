@@ -5,7 +5,7 @@ Emoji picker for legacy Windows systems that are capable of displaying (some) em
 
 Why is it called a keyboard? Originally it was meant to be capable of inserting emoji directly into other applications (like on-screen keyboard), but this functionality has been abandoned during developement.
 
-Emoji are rendered monochrome, color support is current not considered (because D2D/DirectWrite is a pain). It also currently has no application icon.
+Emoji are rendered monochrome, color support is not considered at the moment (because D2D/DirectWrite is a pain). It also currently has no application icon.
 
 ## Installation
 
@@ -21,7 +21,7 @@ For Windows 7 and *older* it's also possible and recommended to use the [*Noto E
 
 Information about available emoji is stored in an sqlite3 database, which can be rebuilt with the included Python script (developed with Python 3.10) to either update the data to [latest Unicode specification](https://www.unicode.org/emoji/charts/full-emoji-list.html), or to change the locale of keywords and labels.
 
-The script downloads the necessary files and caches whem locally. If you want the latest version, delete the cached files `emoji-test.txt`, `emoji-lann-*.txt`, `emoji-land-*.txt`.
+The script downloads the necessary files and caches them locally. If you want the latest version, delete the cached files `emoji-test.txt`, `emoji-lann-*.txt`, `emoji-land-*.txt`.
 
 To rebuild the data with the default English locale, run:
 
