@@ -7,6 +7,12 @@ Why is it called a keyboard? Originally it was meant to be capable of inserting 
 
 Emoji are rendered monochrome, color support is not considered at the moment (because D2D/DirectWrite is a pain). It also currently has no application icon.
 
+## System Requirements
+
+- Windows XP (32-bit, ix86), Windows XP Professional x64 Edition (64-bit, amd64) or newer
+  - Windows 95/98/ME with IE5+ and Windows 2000 are considered in future releases
+- Font: *Segoe UI Symbol*, *Segoe UI Emoji* or *Noto Emoji*
+
 ## Installation
 
 The release package should work out of the box, but few things may need adjustments.
