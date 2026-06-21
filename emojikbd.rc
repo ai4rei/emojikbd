@@ -1,0 +1,5 @@
+
+#include "emojikbd.h"
+
+#include <rc_vinfo.rc>
+#include <rc_mfsta.rc>
