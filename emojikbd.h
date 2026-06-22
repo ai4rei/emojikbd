@@ -4,8 +4,8 @@
 
 #define APP_VERSION_MAJOR 1
 #define APP_VERSION_MINOR 0
-#define APP_VERSION_PATCH 0
-#define APP_VERSION_BUILD 4
+#define APP_VERSION_PATCH 1
+#define APP_VERSION_BUILD 13
 
 #define APP_PRODUCTNAME "Emoji Keyboard"
 #define APP_DESCRIPTION "Emoji picker for legacy systems"
