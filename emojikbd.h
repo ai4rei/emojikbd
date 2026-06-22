@@ -15,6 +15,7 @@
 #define APP_COPYYEAR "2026"
 
 #define APP_HAS_UI
+#define APP_IS_SYSTEM_DPI_AWARE
 
 #define IDC_EMOJILIST (IDC_FIRST+0)
 #define IDC_EDIT_FIND (IDC_FIRST+1)
