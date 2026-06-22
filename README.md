@@ -1,6 +1,8 @@
 ﻿
 # Emoji Keyboard
 
+![Emoji Keyboard Window](screenshot.png)
+
 Emoji picker for legacy Windows systems that are capable of displaying (some) emoji, but do not have means to pick them natively (`Win`+`.`).
 
 Why is it called a keyboard? Originally it was meant to be capable of inserting emoji directly into other applications (like on-screen keyboard), but this functionality has been abandoned during developement.
