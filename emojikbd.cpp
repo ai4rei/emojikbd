@@ -160,46 +160,57 @@ protected:
             {
                 HDC hdcMem = CreateCompatibleDC(NULL);
 
-                if(SaveDC(hdcMem))
+                hr = hdcMem!=NULL ? S_OK : E_OUTOFMEMORY;
+                if(!FAILED(hr))
                 {
-                    SCRIPT_CACHE Sc = NULL;
-
-                    SelectObject(hdcMem, m_hEmojiFont);
-
-                    for(;;)
+                    if(SaveDC(hdcMem))
                     {
-                        IEmoji* pEmoji = NULL;
+                        SCRIPT_CACHE Sc = NULL;
 
-                        hr = pEnumEmoji->Next(1UL, &pEmoji, NULL);
-                        if(hr==S_OK)
+                        SelectObject(hdcMem, m_hEmojiFont);
+
+                        for(;;)
                         {
-                            LPCWSTR const lpwszCodePoints = pEmoji->GetCodePoints();
-                            WORD awIndices[16], awLogClust[16];
-                            SCRIPT_VISATTR Sv[__ARRAYSIZE(awIndices)];
-                            SCRIPT_ANALYSIS Sa = { 0 };
-                            int nGlyphs = 0;
+                            IEmoji* pEmoji = NULL;
 
-                            hr = ScriptShape(hdcMem, &Sc, lpwszCodePoints, GetStringLength(lpwszCodePoints), __ARRAYSIZE(awIndices), &Sa, awIndices, awLogClust, Sv, &nGlyphs);
+                            hr = pEnumEmoji->Next(1UL, &pEmoji, NULL);
+                            if(hr==S_OK)
+                            {
+                                LPCWSTR const lpwszCodePoints = pEmoji->GetCodePoints();
+                                WORD awIndices[16], awLogClust[16];
+                                SCRIPT_VISATTR Sv[__ARRAYSIZE(awIndices)];
+                                SCRIPT_ANALYSIS Sa = { 0 };
+                                int nGlyphs = 0;
 
-                            if(FAILED(hr) || nGlyphs!=1 || awIndices[0]==0)
-                            {// does not collapse into single character on this system or font does not support glyph
+                                hr = ScriptShape(hdcMem, &Sc, lpwszCodePoints, GetStringLength(lpwszCodePoints), __ARRAYSIZE(awIndices), &Sa, awIndices, awLogClust, Sv, &nGlyphs);
+
+                                if(FAILED(hr) || nGlyphs!=1 || awIndices[0]==0)
+                                {// does not collapse into single character on this system or font does not support glyph
+                                    CoSafeRelease(&pEmoji);
+                                    continue;
+                                }
+
+                                auDisplaySet[uDisplayCount] = pEmoji->GetOrder();
+                                uDisplayCount++;
+
                                 CoSafeRelease(&pEmoji);
-                                continue;
                             }
-
-                            auDisplaySet[uDisplayCount] = pEmoji->GetOrder();
-                            uDisplayCount++;
-
-                            CoSafeRelease(&pEmoji);
+                            else
+                            {
+                                break;
+                            }
                         }
-                        else
-                        {
-                            break;
-                        }
+
+                        ScriptFreeCache(&Sc);
+                        RestoreDC(hdcMem, -1);
+                    }
+                    else
+                    {
+                        hr = E_OUTOFMEMORY;
                     }
 
-                    ScriptFreeCache(&Sc);
-                    RestoreDC(hdcMem, -1);
+                    DeleteDC(hdcMem);
+                    hdcMem = NULL;
                 }
 
                 CoSafeRelease(&pEnumEmoji);
