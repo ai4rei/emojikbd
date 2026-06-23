@@ -102,7 +102,8 @@ DB_DELETE_TABLES = [
 ]
 DB_INSERT_GROUP = "INSERT INTO `group` (`name`) VALUES (?)"
 DB_INSERT_SUBGROUP = "INSERT INTO `subgroup` (`group`, `name`) VALUES (?, ?)"
-DB_INSERT_EMOJI = "INSERT INTO `emoji` (`cp`, `subgroup`, `order`, `tts`, `version`, `label`) VALUES (?, ?, ?, ?, ?, ?)"
+DB_INSERT_EMOJI = "INSERT INTO `emoji` (`cp`, `subgroup`, `order`, `tts`, `version`, `label`) "\
+                  "VALUES (?, ?, ?, ?, ?, ?)"
 DB_INSERT_KEYWORD = "INSERT INTO `keyword` (`name`) VALUES (?)"
 DB_INSERT_EMOJI_KEYWORD = "INSERT INTO `emoji_keyword` (`emoji`, `keyword`) VALUES (?, ?)"
 
@@ -112,6 +113,9 @@ class EmojiInfo:
     order: int
     version: float
     label: str
+
+EmojiList = dict[str, dict[str, dict[str, EmojiInfo]]]
+EmojiMeta = dict[str, dict[str, Union[str, list[str]]]]
 
 def _get_local_path() -> str:
     path, _ = os.path.split(__file__)
@@ -161,7 +165,7 @@ def _verify_codepoints(emoji: str, codepoints: list[str]) -> bool:
     ref_emoji = ''.join([chr(int(cp, 16)) for cp in codepoints])
     return ref_emoji == emoji
 
-def _parse_emoji_list() -> dict[str, dict[str, dict[str, EmojiInfo]]]:
+def _parse_emoji_list() -> EmojiList:
     emoji_list = {}
     order_id = 0
 
@@ -205,7 +209,7 @@ def _parse_emoji_list() -> dict[str, dict[str, dict[str, EmojiInfo]]]:
 
     return emoji_list
 
-def _parse_emoji_localized_annotation(local_name: str) -> dict[str, dict[str, Union[str, list[str]]]]:
+def _parse_emoji_localized_annotation(local_name: str) -> EmojiMeta:
     emoji_meta = {}
 
     with open(_get_data_location(local_name), 'rb') as xml_file:
@@ -222,13 +226,13 @@ def _parse_emoji_localized_annotation(local_name: str) -> dict[str, dict[str, Un
 
     return emoji_meta
 
-def _parse_emoji_localized_annotations(locale: str) -> dict[str, dict[str, Union[str, list[str]]]]:
+def _parse_emoji_localized_annotations(locale: str) -> EmojiMeta:
     emoji_meta = {}
     emoji_meta |= _parse_emoji_localized_annotation(_get_local_emoji_lann_name(locale))
     emoji_meta |= _parse_emoji_localized_annotation(_get_local_emoji_land_name(locale))
     return emoji_meta
 
-def _save_emoji_database(emoji_list: dict[str, dict[str, dict[str, EmojiInfo]]], emoji_meta: dict[str, dict[str, Union[str, list[str]]]]):
+def _save_emoji_database(emoji_list: EmojiList, emoji_meta: EmojiMeta):
     keyword_ids = {}
     with sqlite3.connect(_get_data_location(LOCAL_EMOJI_BASE)) as backend:
         cur = backend.cursor()
