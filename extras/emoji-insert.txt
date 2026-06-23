@@ -1,0 +1,39 @@
+# emoji-insert.txt
+# Date: 2026-06-23, 21:00:00 GMT
+#
+# This file contains emoji (or their parts), that are not part of the standard
+# data files (because they aren't considered emoji by themselves for any kind
+# of reason), but are supported by software in common use as such.
+# The file mimics the format of emoji-test.txt to reuse the same parser.
+
+# group: Regional Indicator
+
+# subgroup: regional-indicator
+1F1E6                                                  ; component           # 🇦 E0.0 regional-indicator: A
+1F1E7                                                  ; component           # 🇧 E0.0 regional-indicator: B
+1F1E8                                                  ; component           # 🇨 E0.0 regional-indicator: C
+1F1E9                                                  ; component           # 🇩 E0.0 regional-indicator: D
+1F1EA                                                  ; component           # 🇪 E0.0 regional-indicator: E
+1F1EB                                                  ; component           # 🇫 E0.0 regional-indicator: F
+1F1EC                                                  ; component           # 🇬 E0.0 regional-indicator: G
+1F1ED                                                  ; component           # 🇭 E0.0 regional-indicator: H
+1F1EE                                                  ; component           # 🇮 E0.0 regional-indicator: I
+1F1EF                                                  ; component           # 🇯 E0.0 regional-indicator: J
+1F1F0                                                  ; component           # 🇰 E0.0 regional-indicator: K
+1F1F1                                                  ; component           # 🇱 E0.0 regional-indicator: L
+1F1F2                                                  ; component           # 🇲 E0.0 regional-indicator: M
+1F1F3                                                  ; component           # 🇳 E0.0 regional-indicator: N
+1F1F4                                                  ; component           # 🇴 E0.0 regional-indicator: O
+1F1F5                                                  ; component           # 🇵 E0.0 regional-indicator: P
+1F1F6                                                  ; component           # 🇶 E0.0 regional-indicator: Q
+1F1F7                                                  ; component           # 🇷 E0.0 regional-indicator: R
+1F1F8                                                  ; component           # 🇸 E0.0 regional-indicator: S
+1F1F9                                                  ; component           # 🇹 E0.0 regional-indicator: T
+1F1FA                                                  ; component           # 🇺 E0.0 regional-indicator: U
+1F1FB                                                  ; component           # 🇻 E0.0 regional-indicator: V
+1F1FC                                                  ; component           # 🇼 E0.0 regional-indicator: W
+1F1FD                                                  ; component           # 🇽 E0.0 regional-indicator: X
+1F1FE                                                  ; component           # 🇾 E0.0 regional-indicator: Y
+1F1FF                                                  ; component           # 🇿 E0.0 regional-indicator: Z
+
+#EOF

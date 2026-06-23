@@ -39,6 +39,10 @@ To rebuild the data with a different locale (for example Japanese), run:
 
     python genemoji.py --locale ja
 
+The data can be enhanced with other code points that aren't considered emoji by themselves, but that can be used as such. One category are so-called emoji components (currently *skin tone* 🏻~🏿 and *hair style* 🦰~🦲), that can be enabled with `--with-components` parameter.
+
+Other category are code points that aren't individually found in the standard data at all. These have been added for *insertion* in the *extras* folder (currently *regional indicators* 🇦~🇿, which are used to build country flags). The files use the same format as the official data. To enable these, use the `--with-inserts` parameter.
+
 ## Usage
 
 After starting, you can either find an emoji by one keyword or scroll through the list of all emoji. You can also search emoji to find out what *that box character* actually is.

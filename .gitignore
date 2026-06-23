@@ -2,5 +2,5 @@ __pycache__
 obj
 emojikbd.exe
 emojitab.db
-emoji-*.xml
+emoji-lan*.xml
 emoji-test.txt

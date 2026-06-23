@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE ldml SYSTEM "../../common/dtd/ldml.dtd">
+<!-- Annotations for emoji-insert.txt -->
+<ldml>
+	<annotations>
+		<annotation cp="🇦">A</annotation>
+		<annotation cp="🇦" type="tts">regional-indicator: A</annotation>
+		<annotation cp="🇧">B</annotation>
+		<annotation cp="🇧" type="tts">regional-indicator: B</annotation>
+		<annotation cp="🇨">C</annotation>
+		<annotation cp="🇨" type="tts">regional-indicator: C</annotation>
+		<annotation cp="🇩">D</annotation>
+		<annotation cp="🇩" type="tts">regional-indicator: D</annotation>
+		<annotation cp="🇪">E</annotation>
+		<annotation cp="🇪" type="tts">regional-indicator: E</annotation>
+		<annotation cp="🇫">F</annotation>
+		<annotation cp="🇫" type="tts">regional-indicator: F</annotation>
+		<annotation cp="🇬">G</annotation>
+		<annotation cp="🇬" type="tts">regional-indicator: G</annotation>
+		<annotation cp="🇭">H</annotation>
+		<annotation cp="🇭" type="tts">regional-indicator: H</annotation>
+		<annotation cp="🇮">I</annotation>
+		<annotation cp="🇮" type="tts">regional-indicator: I</annotation>
+		<annotation cp="🇯">J</annotation>
+		<annotation cp="🇯" type="tts">regional-indicator: J</annotation>
+		<annotation cp="🇰">K</annotation>
+		<annotation cp="🇰" type="tts">regional-indicator: K</annotation>
+		<annotation cp="🇱">L</annotation>
+		<annotation cp="🇱" type="tts">regional-indicator: L</annotation>
+		<annotation cp="🇲">M</annotation>
+		<annotation cp="🇲" type="tts">regional-indicator: M</annotation>
+		<annotation cp="🇳">N</annotation>
+		<annotation cp="🇳" type="tts">regional-indicator: N</annotation>
+		<annotation cp="🇴">O</annotation>
+		<annotation cp="🇴" type="tts">regional-indicator: O</annotation>
+		<annotation cp="🇵">P</annotation>
+		<annotation cp="🇵" type="tts">regional-indicator: P</annotation>
+		<annotation cp="🇶">Q</annotation>
+		<annotation cp="🇶" type="tts">regional-indicator: Q</annotation>
+		<annotation cp="🇷">R</annotation>
+		<annotation cp="🇷" type="tts">regional-indicator: R</annotation>
+		<annotation cp="🇸">S</annotation>
+		<annotation cp="🇸" type="tts">regional-indicator: S</annotation>
+		<annotation cp="🇹">T</annotation>
+		<annotation cp="🇹" type="tts">regional-indicator: T</annotation>
+		<annotation cp="🇺">U</annotation>
+		<annotation cp="🇺" type="tts">regional-indicator: U</annotation>
+		<annotation cp="🇻">V</annotation>
+		<annotation cp="🇻" type="tts">regional-indicator: V</annotation>
+		<annotation cp="🇼">W</annotation>
+		<annotation cp="🇼" type="tts">regional-indicator: W</annotation>
+		<annotation cp="🇽">X</annotation>
+		<annotation cp="🇽" type="tts">regional-indicator: X</annotation>
+		<annotation cp="🇾">Y</annotation>
+		<annotation cp="🇾" type="tts">regional-indicator: Y</annotation>
+		<annotation cp="🇿">Z</annotation>
+		<annotation cp="🇿" type="tts">regional-indicator: Z</annotation>
+	</annotations>
+</ldml>

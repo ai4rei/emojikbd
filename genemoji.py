@@ -8,7 +8,7 @@ import sqlite3
 import urllib.request
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
-from typing import Union
+from typing import Tuple, Union
 
 # from tqdm import tqdm
 
@@ -16,8 +16,10 @@ URL_EMOJI_LIST = r'https://unicode.org/Public/emoji/latest/emoji-test.txt'
 URL_EMOJI_LANN_FMT = r'https://github.com/unicode-org/cldr/raw/refs/heads/main/common/annotations/{}.xml'
 URL_EMOJI_LAND_FMT = r'https://github.com/unicode-org/cldr/raw/refs/heads/main/common/annotationsDerived/{}.xml'
 LOCAL_EMOJI_LIST = r'emoji-test.txt'
+LOCAL_EMOJI_LIST_INSERT = r'extras/emoji-insert.txt'
 LOCAL_EMOJI_LANN_FMT = r'emoji-lann-{}.xml'
 LOCAL_EMOJI_LAND_FMT = r'emoji-land-{}.xml'
+LOCAL_EMOJI_INSERT_ANN = r'extras/emoji-insert-ann.xml'
 LOCAL_EMOJI_BASE = r'emojitab.db'
 DEFAULT_LOCALE = 'en'
 
@@ -126,11 +128,17 @@ def _get_local_path() -> str:
 def _get_local_emoji_list_name() -> str:
     return LOCAL_EMOJI_LIST
 
+def _get_local_emoji_list_insert_name() -> str:
+    return LOCAL_EMOJI_LIST_INSERT
+
 def _get_local_emoji_lann_name(locale: str) -> str:
     return LOCAL_EMOJI_LANN_FMT.format(locale)
 
 def _get_local_emoji_land_name(locale: str) -> str:
     return LOCAL_EMOJI_LAND_FMT.format(locale)
+
+def _get_local_emoji_insert_ann_name() -> str:
+    return LOCAL_EMOJI_INSERT_ANN
 
 def _get_remote_emoji_list_name() -> str:
     return URL_EMOJI_LIST
@@ -165,11 +173,11 @@ def _verify_codepoints(emoji: str, codepoints: list[str]) -> bool:
     ref_emoji = ''.join([chr(int(cp, 16)) for cp in codepoints])
     return ref_emoji == emoji
 
-def _parse_emoji_list() -> EmojiList:
+def _parse_emoji_list(local_name: str, include_components = False, init_order_id: int = 0) -> Tuple[EmojiList, int]:
     emoji_list = {}
-    order_id = 0
+    order_id = init_order_id
 
-    with open(_get_data_location(_get_local_emoji_list_name()), 'r', encoding='UTF-8') as txt_file:
+    with open(_get_data_location(local_name), 'r', encoding='UTF-8') as txt_file:
         current_group = ''
         current_subgroup = ''
         matcher =re.compile(r'^([^;]+); (component|(?:un|(?:fully|minimally)-)qualified) +# ([^ ]+) E(\d+\.\d+) (.+)$')
@@ -193,7 +201,7 @@ def _parse_emoji_list() -> EmojiList:
             if not current_group or not current_subgroup:
                 raise ValueError('emoji without group or subgroup', line)
             status = matches[2]
-            if status != 'fully-qualified':
+            if status != 'fully-qualified' and (not include_components or status != 'component'):
                 continue
             emoji = matches[3]
             codepoints = matches[1].strip(' ').split(' ')
@@ -207,7 +215,7 @@ def _parse_emoji_list() -> EmojiList:
             )
             order_id += 1
 
-    return emoji_list
+    return emoji_list, order_id
 
 def _parse_emoji_localized_annotation(local_name: str) -> EmojiMeta:
     emoji_meta = {}
@@ -268,16 +276,25 @@ def _save_emoji_database(emoji_list: EmojiList, emoji_meta: EmojiMeta):
 def _main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--locale', default=DEFAULT_LOCALE, help='specifies the locale for emoji annotations')
+    parser.add_argument('--with-components', action='store_true', help='whether to include emoji components')
+    parser.add_argument('--with-inserts', action='store_true', help='whether to include non-standard inserts')
     argp = parser.parse_args()
 
     print('Loading data files...')
     _load_unicode_data(argp.locale)
 
     print('Parsing emoji list...')
-    emoji_list = _parse_emoji_list()
+    emoji_list, next_order_id = _parse_emoji_list(_get_local_emoji_list_name(), argp.with_components)
+
+    if argp.with_inserts:
+        emoji_inserts, next_order_id = _parse_emoji_list(_get_local_emoji_list_insert_name(), True, next_order_id)
+        emoji_list |= emoji_inserts
 
     print('Parsing emoji localization data...')
     emoji_meta = _parse_emoji_localized_annotations(argp.locale)
+
+    if argp.with_inserts:
+        emoji_meta |= _parse_emoji_localized_annotation(_get_local_emoji_insert_ann_name())
 
     print('Saving database...')
     _save_emoji_database(emoji_list, emoji_meta)
