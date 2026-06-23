@@ -160,7 +160,7 @@ protected:
             {
                 HDC hdcMem = CreateCompatibleDC(NULL);
 
-                SaveDC(hdcMem);
+                if(SaveDC(hdcMem))
                 {
                     SCRIPT_CACHE Sc = NULL;
 
@@ -199,8 +199,8 @@ protected:
                     }
 
                     ScriptFreeCache(&Sc);
+                    RestoreDC(hdcMem, -1);
                 }
-                RestoreDC(hdcMem, -1);
 
                 CoSafeRelease(&pEnumEmoji);
             }
@@ -460,7 +460,7 @@ protected:
                 FillRect(lpDrawItem->hDC, &lpDrawItem->rcItem, GetSysColorBrush(COLOR_WINDOW));
             }
 
-            SaveDC(lpDrawItem->hDC);
+            if(SaveDC(lpDrawItem->hDC))
             {
                 SelectObject(lpDrawItem->hDC, m_hEmojiFont);
 
@@ -475,8 +475,9 @@ protected:
 
                 SetBkMode(lpDrawItem->hDC, TRANSPARENT);
                 TextOut(lpDrawItem->hDC, lpDrawItem->rcItem.left, lpDrawItem->rcItem.top+2, pEmoji->GetCodePoints(), GetStringLength(pEmoji->GetCodePoints()));
+
+                RestoreDC(lpDrawItem->hDC, -1);
             }
-            RestoreDC(lpDrawItem->hDC, -1);
 
             if(!!(lpDrawItem->itemState&ODS_FOCUS))
             {
